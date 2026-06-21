@@ -1,4 +1,11 @@
-.vc/
+# Build output
+bin/
+obj/
+
+# Visual Studio files
 .vs/
-app.config
-App.config
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
