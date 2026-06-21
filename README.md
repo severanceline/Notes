@@ -10,7 +10,6 @@ Notes helps users create, organize, search, and manage personal notes with label
 - SHA-256 password hashing
 - Persistent login using a locally stored user ID
 - Create notes with a title, content, labels, and image attachments
-- Optional title and content fields
 - Auto-save for note title and content changes
 - Multiple labels and images per note
 - Duplicate label prevention
@@ -19,7 +18,6 @@ Notes helps users create, organize, search, and manage personal notes with label
 - Label management from the sidebar
 - Delete notes with related image records and label relationships
 - Local image storage with relative paths
-- GUID-based identifiers
 
 ## Technology Stack
 
@@ -30,7 +28,6 @@ Notes helps users create, organize, search, and manage personal notes with label
 - Microsoft.Data.SqlClient
 - ADO.NET
 - System.Text.Json
-- SHA-256 password hashing
 
 ## Project Structure
 
@@ -43,6 +40,13 @@ Notes
 |   ├── LabelRepository.cs
 │   └── UserRepository.cs
 │
+├── Forms
+│   ├── MainForm.cs
+│   ├── CreateNoteForm.cs
+│   ├── NoteDetailForm.cs
+│   ├── SigninForm.cs
+│   └── SignupForm.cs
+│
 ├── Models
 │   ├── Note.cs
 │   ├── NoteInfo.cs
@@ -51,13 +55,6 @@ Notes
 │   ├── NoteImage.cs
 │   ├── UserLabel.cs
 │   └── LabelModel.cs
-│
-├── Forms
-│   ├── MainForm.cs
-│   ├── CreateNoteForm.cs
-│   ├── NoteDetailForm.cs
-│   ├── SigninForm.cs
-│   └── SignupForm.cs
 │
 ├── Session
 │   └── UserSession.cs
