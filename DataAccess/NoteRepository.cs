@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
-using Noots.Models;
+using Notes.Models;
 
-namespace Noots.DataAccess
+namespace Notes.DataAccess
 {
     public class NoteRepository
     {

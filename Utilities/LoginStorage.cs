@@ -2,14 +2,14 @@
 using System.IO;
 using System.Text.Json;
 
-namespace Noots.Utilities
+namespace Notes.Utilities
 {
     public static class LoginStorage
     {
         private static string path =
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "Noots",
+                "Notes",
                 "login.json"
             );
 

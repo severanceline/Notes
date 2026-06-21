@@ -1,9 +1,9 @@
-using Noots.DataAccess;
-using Noots.Forms;
-using Noots.Session;
-using Noots.Utilities;
+using Notes.DataAccess;
+using Notes.Forms;
+using Notes.Session;
+using Notes.Utilities;
 
-namespace Noots
+namespace Notes
 {
     internal static class Program
     {

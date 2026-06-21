@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Noots.Utilities
+namespace Notes.Utilities
 {
     public static class PasswordHelper
     {

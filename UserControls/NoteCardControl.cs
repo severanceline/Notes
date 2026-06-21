@@ -1,14 +1,14 @@
 ﻿using Microsoft.IdentityModel.Tokens.Experimental;
-using Noots.DataAccess;
-using Noots.Models;
-using Noots.Utilities;
+using Notes.DataAccess;
+using Notes.Models;
+using Notes.Utilities;
 using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Noots.UserControls
+namespace Notes.UserControls
 {
     public partial class NoteCardControl : UserControl
     {

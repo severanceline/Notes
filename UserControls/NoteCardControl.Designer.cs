@@ -1,6 +1,6 @@
-﻿using Noots.Models;
+﻿using Notes.Models;
 
-namespace Noots.UserControls
+namespace Notes.UserControls
 {
     partial class NoteCardControl
     {

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
 
-namespace Noots.Utilities
+namespace Notes.Utilities
 {
     public static class ImageStorageHelper
     {
         private static readonly string baseFolder =
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "Noots",
+                "Notes",
                 "Images"
             );
 

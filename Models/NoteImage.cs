@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Noots.Models
+namespace Notes.Models
 {
     public class NoteImage
     {

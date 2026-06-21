@@ -1,15 +1,15 @@
-﻿using Noots.DataAccess;
-using Noots.Models;
-using Noots.Session;
-using Noots.UserControls;
-using Noots.Utilities;
+﻿using Notes.DataAccess;
+using Notes.Models;
+using Notes.Session;
+using Notes.UserControls;
+using Notes.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Noots.Forms
+namespace Notes.Forms
 {
     public partial class MainForm : Form
     {

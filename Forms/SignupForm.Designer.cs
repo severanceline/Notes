@@ -1,4 +1,4 @@
-﻿namespace Noots.Forms
+﻿namespace Notes.Forms
 {
     partial class SignupForm
     {

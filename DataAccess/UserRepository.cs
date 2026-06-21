@@ -1,11 +1,11 @@
 ﻿using Microsoft.Data.SqlClient;
-using Noots.Models;
-using Noots.Utilities;
+using Notes.Models;
+using Notes.Utilities;
 using System;
 using System.Data;
 using System.Text.RegularExpressions;
 
-namespace Noots.DataAccess
+namespace Notes.DataAccess
 {
     public class UserRepository
     {

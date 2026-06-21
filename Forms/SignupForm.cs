@@ -1,4 +1,4 @@
-﻿using Noots.DataAccess;
+﻿using Notes.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Noots.Forms
+namespace Notes.Forms
 {
     public partial class SignupForm : Form
     {

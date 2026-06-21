@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Microsoft.Data.SqlClient;
-using Noots.Models;
+using Notes.Models;
 
-namespace Noots.DataAccess
+namespace Notes.DataAccess
 {
     public class LabelRepository
     {

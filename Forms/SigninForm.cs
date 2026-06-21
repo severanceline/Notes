@@ -1,7 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Noots.DataAccess;
-using Noots.Session;
-using Noots.Utilities;
+using Notes.DataAccess;
+using Notes.Session;
+using Notes.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Noots.Forms
+namespace Notes.Forms
 {
     public partial class SigninForm : Form
     {

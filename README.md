@@ -2,7 +2,7 @@
 
 A lightweight desktop note-taking application built with **C#**, **.NET 8**, **Windows Forms**, and **SQL Server**.
 
-Noots helps users create, organize, search, and manage personal notes with labels and image attachments.
+Notes helps users create, organize, search, and manage personal notes with labels and image attachments.
 
 ## Features
 
@@ -35,7 +35,7 @@ Noots helps users create, organize, search, and manage personal notes with label
 ## Project Structure
 
 ```text
-Noots
+Notes
 │
 ├── DataAccess
 │   ├── DatabaseManager.cs
@@ -82,10 +82,10 @@ PasswordHelper.VerifyPassword(inputPassword, hashFromDatabase);
 
 ## Persistent Login
 
-After a successful sign-in, Noots stores only the current user's `UserId` locally:
+After a successful sign-in, Notes stores only the current user's `UserId` locally:
 
 ```text
-%AppData%\Noots\login.json
+%AppData%\Notes\login.json
 ```
 
 No password or password hash is stored in this file. The saved login is removed when the user logs out.
@@ -110,7 +110,7 @@ The application waits briefly after the user stops typing before saving, which a
 Images are stored locally under:
 
 ```text
-%AppData%\Noots\Images
+%AppData%\Notes\Images
 ```
 
 Each note has a dedicated folder based on its ID. Only relative image paths are saved in the database.
@@ -124,7 +124,7 @@ Images\[NoteId]\[ImageFileName].jpg
 Database name:
 
 ```text
-Noots
+Notes
 ```
 
 Required tables:
@@ -157,13 +157,13 @@ Configure the connection string in `DatabaseManager.cs`.
 
 ```csharp
 private const string ConnectionString =
-    "Server=.;Database=Noots;Trusted_Connection=True;TrustServerCertificate=True;";
+    "Server=.;Database=Notes;Trusted_Connection=True;TrustServerCertificate=True;";
 ```
 
 ## Running the Application
 
 1. Open the solution in Visual Studio.
-2. Create the `Noots` database and required tables in SQL Server.
+2. Create the `Notes` database and required tables in SQL Server.
 3. Configure the connection string in `DatabaseManager.cs`.
 4. Restore NuGet packages and build the project.
 5. Run the application.
