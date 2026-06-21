@@ -1,4 +1,4 @@
-# Noots
+# Notes
 
 A lightweight desktop note-taking application built with **C#**, **.NET 8**, **Windows Forms**, and **SQL Server**.
 
