@@ -2,7 +2,7 @@
 
 A lightweight desktop note-taking application built with **C#**, **.NET 8**, **Windows Forms**, and **SQL Server**.
 
-Noots helps users create, organize, search, and manage personal notes with labels and image attachments.
+Notes helps users create, organize, search, and manage personal notes with labels and image attachments.
 
 ## Features
 
@@ -10,7 +10,6 @@ Noots helps users create, organize, search, and manage personal notes with label
 - SHA-256 password hashing
 - Persistent login using a locally stored user ID
 - Create notes with a title, content, labels, and image attachments
-- Optional title and content fields
 - Auto-save for note title and content changes
 - Multiple labels and images per note
 - Duplicate label prevention
@@ -19,7 +18,6 @@ Noots helps users create, organize, search, and manage personal notes with label
 - Label management from the sidebar
 - Delete notes with related image records and label relationships
 - Local image storage with relative paths
-- GUID-based identifiers
 
 ## Technology Stack
 
@@ -30,7 +28,6 @@ Noots helps users create, organize, search, and manage personal notes with label
 - Microsoft.Data.SqlClient
 - ADO.NET
 - System.Text.Json
-- SHA-256 password hashing
 
 ## Project Structure
 
@@ -43,6 +40,13 @@ Noots
 |   ├── LabelRepository.cs
 │   └── UserRepository.cs
 │
+├── Forms
+│   ├── MainForm.cs
+│   ├── CreateNoteForm.cs
+│   ├── NoteDetailForm.cs
+│   ├── SigninForm.cs
+│   └── SignupForm.cs
+│
 ├── Models
 │   ├── Note.cs
 │   ├── NoteInfo.cs
@@ -51,13 +55,6 @@ Noots
 │   ├── NoteImage.cs
 │   ├── UserLabel.cs
 │   └── LabelModel.cs
-│
-├── Forms
-│   ├── MainForm.cs
-│   ├── CreateNoteForm.cs
-│   ├── NoteDetailForm.cs
-│   ├── SigninForm.cs
-│   └── SignupForm.cs
 │
 ├── Session
 │   └── UserSession.cs
@@ -82,7 +79,7 @@ PasswordHelper.VerifyPassword(inputPassword, hashFromDatabase);
 
 ## Persistent Login
 
-After a successful sign-in, Noots stores only the current user's `UserId` locally:
+After a successful sign-in, Notes stores only the current user's `UserId` locally:
 
 ```text
 %AppData%\Noots\login.json
@@ -124,7 +121,7 @@ Images\[NoteId]\[ImageFileName].jpg
 Database name:
 
 ```text
-Noots
+Notes
 ```
 
 Required tables:
@@ -157,13 +154,13 @@ Configure the connection string in `DatabaseManager.cs`.
 
 ```csharp
 private const string ConnectionString =
-    "Server=.;Database=Noots;Trusted_Connection=True;TrustServerCertificate=True;";
+    "Server=.;Database=Notes;Trusted_Connection=True;TrustServerCertificate=True;";
 ```
 
 ## Running the Application
 
 1. Open the solution in Visual Studio.
-2. Create the `Noots` database and required tables in SQL Server.
+2. Create the `Notes` database and required tables in SQL Server.
 3. Configure the connection string in `DatabaseManager.cs`.
 4. Restore NuGet packages and build the project.
 5. Run the application.
