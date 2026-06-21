@@ -57,11 +57,12 @@ namespace Notes.UserControls
             // flpImagePreview
             // 
             flpImagePreview.Dock = DockStyle.Bottom;
-            flpImagePreview.Location = new Point(0, 88);
+            flpImagePreview.Location = new Point(0, 57);
             flpImagePreview.Name = "flpImagePreview";
-            flpImagePreview.Size = new Size(298, 50);
+            flpImagePreview.Size = new Size(298, 81);
             flpImagePreview.TabIndex = 3;
             flpImagePreview.WrapContents = false;
+            flpImagePreview.Paint += flpImagePreview_Paint;
             // 
             // flpLabels
             // 

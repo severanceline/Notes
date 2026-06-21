@@ -18,6 +18,7 @@
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NoteDetailForm));
             pnlHeader = new Panel();
             btnClose = new Button();
             btnDelete = new Button();
@@ -192,10 +193,11 @@
             Controls.Add(pnlImages);
             Controls.Add(pnlLabels);
             Controls.Add(pnlHeader);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(566, 663);
             Name = "NoteDetailForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Note Details";
+            Text = "Note";
             pnlHeader.ResumeLayout(false);
             pnlImages.ResumeLayout(false);
             pnlLabels.ResumeLayout(false);

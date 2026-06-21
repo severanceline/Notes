@@ -55,10 +55,10 @@ namespace Notes.UserControls
 
             foreach (var img in images)
             {
-                PictureBox pic = new    PictureBox
+                PictureBox pic = new PictureBox
                 {
-                    Width = 40,
-                    Height = 40,
+                    Width = 100,
+                    Height = 100,
                     SizeMode = PictureBoxSizeMode.Zoom,
                     Margin = new Padding(2),
                     BorderStyle = BorderStyle.FixedSingle
@@ -79,7 +79,7 @@ namespace Notes.UserControls
         {
             flpLabels.Controls.Clear();
             var labelRepo = new LabelRepository();
-            if(labelRepo.GetLabelsForNote(NoteData.NoteInfo.Id) == null) return;
+            if (labelRepo.GetLabelsForNote(NoteData.NoteInfo.Id) == null) return;
             labelRepo.GetLabelsForNote(NoteData.NoteInfo.Id).ForEach(label =>
             {
                 Label chip = new Label
@@ -100,6 +100,11 @@ namespace Notes.UserControls
         private void Card_Click(object sender, EventArgs e)
         {
             NoteClicked?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void flpImagePreview_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

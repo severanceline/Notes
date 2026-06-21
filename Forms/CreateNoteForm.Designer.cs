@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateNoteForm));
             pnlHeader = new Panel();
             btnClose = new Button();
             btnSave = new Button();
@@ -204,10 +205,11 @@
             Controls.Add(pnlImages);
             Controls.Add(pnlLabels);
             Controls.Add(pnlHeader);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(566, 663);
             Name = "CreateNoteForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "CreateNoteForm";
+            Text = "Create Note";
             Shown += CreateNoteForm_Shown;
             pnlHeader.ResumeLayout(false);
             pnlImages.ResumeLayout(false);

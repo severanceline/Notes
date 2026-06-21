@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SigninForm));
             label1 = new Label();
             txtUserName = new TextBox();
             label2 = new Label();
@@ -113,12 +114,13 @@
             Controls.Add(button1);
             Controls.Add(label2);
             Controls.Add(txtPassword);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(314, 350);
             MinimumSize = new Size(314, 350);
             Name = "SigninForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "SigninForm";
+            Text = "Signin";
             ResumeLayout(false);
             PerformLayout();
         }

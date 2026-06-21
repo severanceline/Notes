@@ -2,32 +2,52 @@
 
 A lightweight desktop note-taking application built with **C#**, **.NET 8**, **Windows Forms**, and **SQL Server**.
 
-Notes helps users create, organize, search, and manage personal notes with labels and image attachments.
+Notes provides a simple workspace for creating, organizing, searching, and managing personal notes with labels and image attachments.
 
 ## Features
 
 - User registration and sign-in
-- SHA-256 password hashing
 - Persistent login using a locally stored user ID
 - Create notes with a title, content, labels, and image attachments
-- Auto-save for note title and content changes
+- Auto-save note title and content changes
 - Multiple labels and images per note
 - Duplicate label prevention
 - Search notes by title and content
-- Filter notes by labels
+- Filter notes by one or more labels
+- AND-based multi-label filtering
 - Label management from the sidebar
 - Delete notes with related image records and label relationships
-- Local image storage with relative paths
+- Local image storage using relative paths
+
+## Screenshots
+
+### Main Dashboard
+
+![Main dashboard](docs/screenshots/main-dashboard.png)
+
+### Create Note
+
+![Create note form](docs/screenshots/create-note.png)
+
+### Note Details and Labels
+
+![Note details](docs/screenshots/note-details.png)
+
+### Search and Label Filtering
+
+![Search and label filtering](docs/screenshots/search-filter.png)
 
 ## Technology Stack
 
-- C#
-- .NET 8
-- Windows Forms
-- SQL Server
-- Microsoft.Data.SqlClient
-- ADO.NET
-- System.Text.Json
+| Technology | Purpose |
+|---|---|
+| C# | Application development |
+| .NET 8 | Target framework |
+| Windows Forms | Desktop user interface |
+| SQL Server | Data persistence |
+| Microsoft.Data.SqlClient | SQL Server connectivity |
+| ADO.NET | Database access |
+| System.Text.Json | Local login data serialization |
 
 ## Project Structure
 
@@ -37,7 +57,7 @@ Notes
 ├── DataAccess
 │   ├── DatabaseManager.cs
 │   ├── NoteRepository.cs
-|   ├── LabelRepository.cs
+│   ├── LabelRepository.cs
 │   └── UserRepository.cs
 │
 ├── Forms
@@ -51,8 +71,8 @@ Notes
 │   ├── Note.cs
 │   ├── NoteInfo.cs
 │   ├── NoteLabel.cs
-│   ├── User.cs
 │   ├── NoteImage.cs
+│   ├── User.cs
 │   ├── UserLabel.cs
 │   └── LabelModel.cs
 │
@@ -68,18 +88,11 @@ Notes
     └── NoteCardControl.cs
 ```
 
-## Authentication
+## Authentication and Persistent Login
 
-Passwords are not stored as plain text. The application hashes passwords with SHA-256 before storing them in SQL Server.
+Passwords are hashed before being stored in the database; plain-text passwords are not persisted.
 
-```csharp
-PasswordHelper.HashPassword(password);
-PasswordHelper.VerifyPassword(inputPassword, hashFromDatabase);
-```
-
-## Persistent Login
-
-After a successful sign-in, Notes stores only the current user's `UserId` locally:
+After a successful sign-in, the application stores only the current user's `UserId` locally:
 
 ```text
 %AppData%\Notes\login.json
@@ -89,12 +102,29 @@ No password or password hash is stored in this file. The saved login is removed 
 
 ## Notes and Labels
 
-A note can contain a title, content, one or more labels, and multiple image attachments.
+A note can include a title, content, one or more labels, and multiple image attachments.
 
 - Notes can be searched by title and content.
 - Labels are trimmed and compared case-insensitively to prevent duplicates.
-- A note can have multiple labels, and a label can be used across multiple notes.
+- A note can have multiple labels, and a label can be associated with multiple notes.
 - Removing a label does not delete the user's notes.
+
+## Search and Label Filtering
+
+Notes can be filtered by search text and selected labels at the same time.
+
+When multiple labels are selected, **AND logic** is applied. A note is displayed only when it contains every selected label.
+
+Example:
+
+```text
+Search text: meeting
+Selected labels: Work + Urgent
+```
+
+The result contains only notes that include `meeting` in their title or content and have both the `Work` and `Urgent` labels.
+
+When no labels are selected, notes from all labels are included.
 
 ## Auto-Save
 
@@ -110,11 +140,13 @@ Images are stored locally under:
 %AppData%\Notes\Images
 ```
 
-Each note has a dedicated folder based on its ID. Only relative image paths are saved in the database.
+Each note has a dedicated folder based on its ID. Only relative image paths are stored in the database:
 
 ```text
 Images\[NoteId]\[ImageFileName].jpg
 ```
+
+Images selected during note creation remain temporary until the note is saved. After saving, they are copied to the local Notes image directory.
 
 ## Database
 
@@ -135,6 +167,7 @@ NoteLabels
 NoteImages
 ```
 
+
 ## Requirements
 
 - .NET 8 SDK
@@ -142,7 +175,7 @@ NoteImages
 - SQL Server
 - `Microsoft.Data.SqlClient` NuGet package
 
-Install the package if needed:
+Install the SQL Server client package if needed:
 
 ```bash
 dotnet add package Microsoft.Data.SqlClient
@@ -150,7 +183,7 @@ dotnet add package Microsoft.Data.SqlClient
 
 ## Configuration
 
-Configure the connection string in `DatabaseManager.cs`.
+Configure the SQL Server connection string in `DatabaseManager.cs`.
 
 ```csharp
 private const string ConnectionString =
@@ -165,3 +198,4 @@ private const string ConnectionString =
 4. Restore NuGet packages and build the project.
 5. Run the application.
 6. Create an account or sign in to start managing notes.
+
