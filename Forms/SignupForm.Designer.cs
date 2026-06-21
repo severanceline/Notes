@@ -155,6 +155,9 @@
             Controls.Add(lblPassword);
             Controls.Add(lblUserName);
             Controls.Add(lblTitle);
+            MaximizeBox = false;
+            MaximumSize = new Size(314, 350);
+            MinimumSize = new Size(314, 350);
             Name = "SignupForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "SignupForm";

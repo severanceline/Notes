@@ -847,5 +847,10 @@ namespace Noots.Forms
             _autoSaveTimer.Dispose();
             _toolTip.Dispose();
         }
+
+        private void txtContent_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -776,5 +776,15 @@ namespace Noots.Forms
         {
             _toolTip.Dispose();
         }
+
+        private void CreateNoteForm_Shown(object sender, EventArgs e)
+        {
+            txtTitle.Focus();
+        }
+
+        private void CreateNoteForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

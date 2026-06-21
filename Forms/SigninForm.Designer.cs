@@ -113,6 +113,9 @@
             Controls.Add(button1);
             Controls.Add(label2);
             Controls.Add(txtPassword);
+            MaximizeBox = false;
+            MaximumSize = new Size(314, 350);
+            MinimumSize = new Size(314, 350);
             Name = "SigninForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "SigninForm";

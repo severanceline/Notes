@@ -30,6 +30,7 @@ namespace Noots.Forms
         {
             SigninForm form = new SigninForm();
             form.Show();
+            form.FormClosed += SigninFormClosed;
             this.Hide();
         }
 
@@ -48,12 +49,18 @@ namespace Noots.Forms
 
                 SigninForm form = new SigninForm();
                 form.Show();
-                this.Close();
+                form.FormClosed += SigninFormClosed;
+                this.Hide();
             }
             else
             {
                 MessageBox.Show(result.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void SigninFormClosed(object s, FormClosedEventArgs args)
+        {
+            this.Close();
         }
     }
 }

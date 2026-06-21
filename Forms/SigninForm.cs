@@ -31,8 +31,9 @@ namespace Noots.Forms
         private void button2_Click(object sender, EventArgs e)
         {
             SignupForm form = new SignupForm();
+            this.Hide();
             form.Show();
-            this.Close();
+            form.FormClosed += MainFormClosed;       
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -73,7 +74,7 @@ namespace Noots.Forms
         }
         private void MainFormClosed(object s, FormClosedEventArgs args)
         {
-            this.Close();
+            Application.Exit();
         }
     }
 }
