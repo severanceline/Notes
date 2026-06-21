@@ -40,12 +40,16 @@ Noots
 ├── DataAccess
 │   ├── DatabaseManager.cs
 │   ├── NoteRepository.cs
-│   └── LabelRepository.cs
+|   ├── LabelRepository.cs
+│   └── UserRepository.cs
 │
 ├── Models
 │   ├── Note.cs
 │   ├── NoteInfo.cs
+│   ├── NoteLabel.cs
+│   ├── User.cs
 │   ├── NoteImage.cs
+│   ├── UserLabel.cs
 │   └── LabelModel.cs
 │
 ├── Forms
@@ -132,16 +136,6 @@ Labels
 UserLabels
 NoteLabels
 NoteImages
-```
-
-Recommended unique indexes:
-
-```sql
-CREATE UNIQUE INDEX UX_NoteLabels_NoteId_LabelId
-ON NoteLabels(NoteId, LabelId);
-
-CREATE UNIQUE INDEX UX_UserLabels_UserId_LabelId
-ON UserLabels(UserId, LabelId);
 ```
 
 ## Requirements
