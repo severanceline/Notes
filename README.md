@@ -21,21 +21,13 @@ Notes provides a simple workspace for creating, organizing, searching, and manag
 
 ## Screenshots
 
-### Main Dashboard
+| Main Dashboard | Search and Label Filtering |
+|:---:|:---:|
+| ![Main dashboard](docs/screenshots/main-dashboard.png) |  ![Search and label filtering](docs/screenshots/search-filter.png)|
 
-![Main dashboard](docs/screenshots/main-dashboard.png)
-
-### Create Note
-
-![Create note form](docs/screenshots/create-note.png)
-
-### Note Details and Labels
-
-![Note details](docs/screenshots/note-details.png)
-
-### Search and Label Filtering
-
-![Search and label filtering](docs/screenshots/search-filter.png)
+| Note Details and Labels | Create Note |
+|:---:|:---:|
+| ![Note details](docs/screenshots/note-details.png) |![Create note form](docs/screenshots/create-note.png) |
 
 ## Technology Stack
 
