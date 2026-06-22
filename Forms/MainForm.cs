@@ -33,35 +33,27 @@ namespace Notes.Forms
         {
             InitializeComponent();
 
+            clbFilterLabels.DisplayMember = nameof(LabelModel.Name);
             _noteRepo = new NoteRepository();
             _labelRepo = new LabelRepository();
 
             txtSearch.TextChanged += txtSearch_TextChanged;
 
-            clbFilterLabels.ItemCheck +=
-                clbFilterLabels_ItemCheck;
+            clbFilterLabels.ItemCheck += clbFilterLabels_ItemCheck;
 
-            btnClearLabelFilters.Click +=
-                btnClearLabelFilters_Click;
+            btnClearLabelFilters.Click += btnClearLabelFilters_Click;
 
             FormClosed += MainForm_FormClosed;
         }
 
-        // =========================
-        // FORM LOAD
-        // =========================
         private void MainForm_Load(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Maximized;
             MinimumSize = new Size(900, 600);
-
             SetWelcome();
             RefreshMainData();
         }
 
-        // =========================
-        // WELCOME USER
-        // =========================
         private void SetWelcome()
         {
             if (UserSession.CurrentUser != null)
@@ -71,9 +63,6 @@ namespace Notes.Forms
             }
         }
 
-        // =========================
-        // REFRESH NOTES AND LABELS
-        // =========================
         private void RefreshMainData()
         {
             if (UserSession.CurrentUser == null)
@@ -81,22 +70,14 @@ namespace Notes.Forms
                 return;
             }
 
-            HashSet<Guid> selectedLabelIds =
-                GetSelectedFilterLabelIds();
-
+            HashSet<Guid> selectedLabelIds =  GetSelectedFilterLabelIds();
             LoadData();
-
             ClearLabelFilterCache();
-
             LoadLabelFilters(selectedLabelIds);
             LoadSidebarLabels();
-
             ApplyFilters();
         }
 
-        // =========================
-        // LOAD NOTES
-        // =========================
         private void LoadData()
         {
             if (UserSession.CurrentUser == null)
@@ -109,9 +90,6 @@ namespace Notes.Forms
                 UserSession.CurrentUser.Id);
         }
 
-        // =========================
-        // RENDER NOTES
-        // =========================
         private void RenderNotes(List<Note> notes)
         {
             ClearControls(flpNotes);
@@ -137,9 +115,6 @@ namespace Notes.Forms
             }
         }
 
-        // =========================
-        // CREATE NOTE
-        // =========================
         private void btnCreateNote_Click(object sender, EventArgs e)
         {
             using (CreateNoteForm form =
@@ -151,9 +126,6 @@ namespace Notes.Forms
             RefreshMainData();
         }
 
-        // =========================
-        // SEARCH TEXT CHANGED
-        // =========================
         private void txtSearch_TextChanged(
             object sender,
             EventArgs e)
@@ -161,9 +133,6 @@ namespace Notes.Forms
             ApplyFilters();
         }
 
-        // =========================
-        // CHECKED LABEL CHANGED
-        // =========================
         private void clbFilterLabels_ItemCheck(
             object sender,
             ItemCheckEventArgs e)
@@ -173,8 +142,6 @@ namespace Notes.Forms
                 return;
             }
 
-            // CheckedItems updates after this event finishes.
-            // BeginInvoke runs the filter after the checkbox state is updated.
             try
             {
                 BeginInvoke((MethodInvoker)delegate
@@ -188,16 +155,11 @@ namespace Notes.Forms
             }
             catch (InvalidOperationException)
             {
-                // The form may be closing.
+                
             }
         }
 
-        // =========================
-        // CLEAR LABEL FILTERS
-        // =========================
-        private void btnClearLabelFilters_Click(
-            object sender,
-            EventArgs e)
+        private void btnClearLabelFilters_Click(object sender,EventArgs e)
         {
             _isLoadingLabelFilters = true;
 
@@ -217,9 +179,7 @@ namespace Notes.Forms
             ApplyFilters();
         }
 
-        // =========================
-        // APPLY SEARCH + AND FILTER
-        // =========================
+        // APPLY SEARCH AND FILTER
         private void ApplyFilters()
         {
             if (UserSession.CurrentUser == null)
@@ -228,11 +188,9 @@ namespace Notes.Forms
                 return;
             }
 
-            string searchText =
-                (txtSearch.Text ?? string.Empty).Trim();
+            string searchText = (txtSearch.Text ?? string.Empty).Trim();
 
-            HashSet<Guid> selectedLabelIds =
-                GetSelectedFilterLabelIds();
+            HashSet<Guid> selectedLabelIds = GetSelectedFilterLabelIds();
 
             IEnumerable<Note> filteredNotes = allNotes;
 
@@ -241,11 +199,9 @@ namespace Notes.Forms
             {
                 filteredNotes = filteredNotes.Where(note =>
                 {
-                    string title =
-                        note.NoteInfo?.Title ?? string.Empty;
+                    string title = note.NoteInfo?.Title ?? string.Empty;
 
-                    string content =
-                        note.NoteInfo?.Content ?? string.Empty;
+                    string content = note.NoteInfo?.Content ?? string.Empty;
 
                     return title.IndexOf(
                                searchText,
@@ -274,9 +230,8 @@ namespace Notes.Forms
             RenderNotes(filteredNotes.ToList());
         }
 
-        // =========================
         // GET SELECTED LABEL IDS
-        // =========================
+
         private HashSet<Guid> GetSelectedFilterLabelIds()
         {
             HashSet<Guid> selectedIds =
@@ -284,22 +239,16 @@ namespace Notes.Forms
 
             foreach (object item in clbFilterLabels.CheckedItems)
             {
-                LabelFilterItem filterItem =
-                    item as LabelFilterItem;
-
-                if (filterItem != null &&
-                    filterItem.Id.HasValue)
+                if (item is LabelModel label)
                 {
-                    selectedIds.Add(filterItem.Id.Value);
+                    selectedIds.Add(label.Id);
                 }
             }
 
             return selectedIds;
         }
 
-        // =========================
         // GET NOTE IDS FOR AND FILTER
-        // =========================
         private HashSet<Guid> GetNoteIdsWithAllSelectedLabels(
             HashSet<Guid> selectedLabelIds)
         {
@@ -330,9 +279,7 @@ namespace Notes.Forms
             _cachedFilteredNoteIds.Clear();
         }
 
-        // =========================
         // LOAD LABEL CHECKBOXES
-        // =========================
         private void LoadLabelFilters(
             HashSet<Guid> selectedLabelIds)
         {
@@ -355,15 +302,8 @@ namespace Notes.Forms
 
                 foreach (LabelModel label in labels)
                 {
-                    LabelFilterItem item =
-                        new LabelFilterItem
-                        {
-                            Id = label.Id,
-                            Name = label.Name
-                        };
-
                     clbFilterLabels.Items.Add(
-                        item,
+                        label,
                         selectedLabelIds.Contains(label.Id));
                 }
             }
@@ -374,9 +314,8 @@ namespace Notes.Forms
             }
         }
 
-        // =========================
         // LOAD SIDEBAR LABELS
-        // =========================
+
         private void LoadSidebarLabels()
         {
             if (UserSession.CurrentUser == null)
@@ -399,9 +338,7 @@ namespace Notes.Forms
             }
         }
 
-        // =========================
         // CREATE SIDEBAR LABEL ITEM
-        // =========================
         private Panel CreateSidebarLabelItem(LabelModel label)
         {
             Panel item = new Panel
@@ -473,17 +410,14 @@ namespace Notes.Forms
             return item;
         }
 
-        // =========================
         // TOGGLE LABEL FILTER
-        // =========================
+
         private void ToggleLabelFilter(Guid labelId)
         {
             for (int i = 0; i < clbFilterLabels.Items.Count; i++)
             {
-                LabelFilterItem item =
-                    clbFilterLabels.Items[i] as LabelFilterItem;
-
-                if (item != null && item.Id == labelId)
+                if (clbFilterLabels.Items[i] is LabelModel label &&
+                    label.Id == labelId)
                 {
                     bool isChecked =
                         clbFilterLabels.GetItemChecked(i);
@@ -497,9 +431,7 @@ namespace Notes.Forms
             }
         }
 
-        // =========================
         // DELETE LABEL
-        // =========================
         private void DeleteSidebarLabel(LabelModel label)
         {
             if (UserSession.CurrentUser == null)
@@ -549,9 +481,7 @@ namespace Notes.Forms
             }
         }
 
-        // =========================
         // ADD NEW LABEL
-        // =========================
         private void btnAddLabel_Click(
             object sender,
             EventArgs e)
@@ -612,9 +542,7 @@ namespace Notes.Forms
             }
         }
 
-        // =========================
         // LOGOUT
-        // =========================
         private void btnLogout_Click_1(
             object sender,
             EventArgs e)
@@ -627,9 +555,7 @@ namespace Notes.Forms
             new SigninForm().Show();
         }
 
-        // =========================
         // CLEAR FLOWLAYOUT CONTROLS
-        // =========================
         private void ClearControls(FlowLayoutPanel panel)
         {
             while (panel.Controls.Count > 0)
@@ -648,29 +574,12 @@ namespace Notes.Forms
         {
         }
 
-        // =========================
         // CLEAN UP
-        // =========================
         private void MainForm_FormClosed(
             object sender,
             FormClosedEventArgs e)
         {
             _toolTip.Dispose();
-        }
-
-        // =========================
-        // FILTER ITEM MODEL
-        // =========================
-        private class LabelFilterItem
-        {
-            public Guid? Id { get; set; }
-
-            public string Name { get; set; }
-
-            public override string ToString()
-            {
-                return Name ?? string.Empty;
-            }
         }
     }
 }
