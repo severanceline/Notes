@@ -118,11 +118,11 @@ The result contains only notes that include `meeting` in their title or content 
 
 When no labels are selected, notes from all labels are included.
 
-## Auto-Save
+## Auto-Save in NoteDetailForm
 
-Changes to note titles and content are automatically saved in `NoteDetailForm`.
+When a user opens an existing note in `NoteDetailForm` to view or edit it, changes to the note title and content are saved automatically.
 
-The application waits briefly after the user stops typing before saving, which avoids unnecessary database updates for every typed character. Pending changes are also saved before the note form closes.
+After the user stops typing, the application waits briefly before saving to avoid unnecessary database updates for every keystroke. Any unsaved title or content changes are also saved when the `NoteDetailForm` is closed.
 
 ## Image Storage
 
