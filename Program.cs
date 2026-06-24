@@ -20,7 +20,6 @@ namespace Notes
 
             if (savedUserId != null)
             {
-                // ????? ???? ?? ??????? user ?? ?????
                 var repo = new UserRepository();
                 var user = repo.GetUserById(savedUserId.Value);
 

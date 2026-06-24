@@ -567,13 +567,6 @@ namespace Notes.Forms
             }
         }
 
-        // Keeps compatibility with the Event in Designer.
-        private void flpSidebarLabels_Paint(
-            object sender,
-            PaintEventArgs e)
-        {
-        }
-
         // CLEAN UP
         private void MainForm_FormClosed(
             object sender,

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Microsoft.Data.SqlClient;
 using Notes.Models;
@@ -9,19 +8,16 @@ namespace Notes.DataAccess
 {
     public class LabelRepository
     {
-        // =========================
         // GET USER LABELS
-        // =========================
         public List<LabelModel> GetLabelsByUserId(Guid userId)
         {
             List<LabelModel> labels = new List<LabelModel>();
 
             string query = @"
-                SELECT DISTINCT L.Id, L.Name
-                FROM Labels L
-                INNER JOIN UserLabels UL ON L.Id = UL.LabelId
-                WHERE UL.UserId = @UserId
-                ORDER BY L.Name";
+                SELECT Id, Name
+                FROM Labels
+                WHERE UserId = @UserId
+                ORDER BY Name";
 
             using (SqlConnection conn = DatabaseManager.GetConnection())
             using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -46,153 +42,103 @@ namespace Notes.DataAccess
             return labels;
         }
 
-        // =========================
-        // GET OR CREATE UNIQUE LABEL
-        // =========================
+        // GET OR CREATE LABEL FOR USER
         public LabelModel GetOrCreateLabelForUser(
             string labelName,
             Guid userId)
         {
-            string normalizedName = (labelName ?? string.Empty).Trim();
+            string cleanName = (labelName ?? string.Empty).Trim();
 
-            if (string.IsNullOrWhiteSpace(normalizedName))
+            if (string.IsNullOrWhiteSpace(cleanName))
             {
                 throw new ArgumentException(
                     "A label name is required.",
                     nameof(labelName));
             }
 
+            LabelModel label = null;
+
+            string findQuery = @"
+                SELECT TOP 1 Id, Name
+                FROM Labels
+                WHERE UserId = @UserId
+                AND UPPER(Name) = UPPER(@Name)";
+
             using (SqlConnection conn = DatabaseManager.GetConnection())
+            using (SqlCommand cmd = new SqlCommand(findQuery, conn))
             {
+                cmd.Parameters.AddWithValue("@UserId", userId);
+                cmd.Parameters.AddWithValue("@Name", cleanName);
+
                 conn.Open();
 
-                using (SqlTransaction transaction =
-                    conn.BeginTransaction(IsolationLevel.Serializable))
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    try
+                    if (reader.Read())
                     {
-                        LabelModel label = null;
-
-                        string findLabelQuery = @"
-                            SELECT TOP 1 Id, Name
-                            FROM Labels WITH (UPDLOCK, HOLDLOCK)
-                            WHERE UPPER(LTRIM(RTRIM(Name))) = UPPER(@Name)
-                            ORDER BY Id";
-
-                        using (SqlCommand findCmd = new SqlCommand(
-                            findLabelQuery,
-                            conn,
-                            transaction))
+                        label = new LabelModel
                         {
-                            findCmd.Parameters.AddWithValue(
-                                "@Name",
-                                normalizedName);
-
-                            using (SqlDataReader reader =
-                                findCmd.ExecuteReader())
-                            {
-                                if (reader.Read())
-                                {
-                                    label = new LabelModel
-                                    {
-                                        Id = reader.GetGuid(0),
-                                        Name = reader.GetString(1)
-                                    };
-                                }
-                            }
-                        }
-
-                        if (label == null)
-                        {
-                            label = new LabelModel
-                            {
-                                Id = Guid.NewGuid(),
-                                Name = normalizedName
-                            };
-
-                            string insertLabelQuery = @"
-                                INSERT INTO Labels (Id, Name)
-                                VALUES (@Id, @Name)";
-
-                            using (SqlCommand insertCmd = new SqlCommand(
-                                insertLabelQuery,
-                                conn,
-                                transaction))
-                            {
-                                insertCmd.Parameters.AddWithValue(
-                                    "@Id",
-                                    label.Id);
-
-                                insertCmd.Parameters.AddWithValue(
-                                    "@Name",
-                                    label.Name);
-
-                                insertCmd.ExecuteNonQuery();
-                            }
-                        }
-
-                        string connectUserQuery = @"
-                            IF NOT EXISTS
-                            (
-                                SELECT 1
-                                FROM UserLabels WITH (UPDLOCK, HOLDLOCK)
-                                WHERE UserId = @UserId
-                                AND LabelId = @LabelId
-                            )
-                            BEGIN
-                                INSERT INTO UserLabels (UserId, LabelId)
-                                VALUES (@UserId, @LabelId)
-                            END";
-
-                        using (SqlCommand connectCmd = new SqlCommand(
-                            connectUserQuery,
-                            conn,
-                            transaction))
-                        {
-                            connectCmd.Parameters.AddWithValue(
-                                "@UserId",
-                                userId);
-
-                            connectCmd.Parameters.AddWithValue(
-                                "@LabelId",
-                                label.Id);
-
-                            connectCmd.ExecuteNonQuery();
-                        }
-
-                        transaction.Commit();
-
-                        return label;
-                    }
-                    catch
-                    {
-                        transaction.Rollback();
-                        throw;
+                            Id = reader.GetGuid(0),
+                            Name = reader.GetString(1)
+                        };
                     }
                 }
             }
+
+            if (label != null)
+            {
+                return label;
+            }
+
+            label = new LabelModel
+            {
+                Id = Guid.NewGuid(),
+                Name = cleanName
+            };
+
+            string insertQuery = @"
+                INSERT INTO Labels (Id, UserId, Name)
+                VALUES (@Id, @UserId, @Name)";
+
+            using (SqlConnection conn = DatabaseManager.GetConnection())
+            using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", label.Id);
+                cmd.Parameters.AddWithValue("@UserId", userId);
+                cmd.Parameters.AddWithValue("@Name", label.Name);
+
+                conn.Open();
+
+                cmd.ExecuteNonQuery();
+            }
+
+            return label;
         }
 
-        // =========================
         // CREATE LABEL FOR USER
-        // =========================
         public void CreateLabelForUser(
             LabelModel label,
             Guid userId)
         {
-            GetOrCreateLabelForUser(
-                label.Name,
-                userId);
+            if (label == null)
+            {
+                throw new ArgumentNullException(nameof(label));
+            }
+
+            GetOrCreateLabelForUser(label.Name, userId);
         }
 
-        // =========================
         // CREATE LABEL FOR USER AND NOTE
-        // =========================
         public void CreateLabelForUserAndNote(
             LabelModel label,
             Guid userId,
             Guid noteId)
         {
+            if (label == null)
+            {
+                throw new ArgumentNullException(nameof(label));
+            }
+
             LabelModel savedLabel =
                 GetOrCreateLabelForUser(
                     label.Name,
@@ -203,9 +149,7 @@ namespace Notes.DataAccess
                 savedLabel.Id);
         }
 
-        // =========================
         // ADD LABEL TO NOTE
-        // =========================
         public void AddLabelToNote(
             Guid noteId,
             Guid labelId)
@@ -235,17 +179,16 @@ namespace Notes.DataAccess
             }
         }
 
-        // =========================
         // GET NOTE LABELS
-        // =========================
         public List<LabelModel> GetLabelsForNote(Guid noteId)
         {
             List<LabelModel> labels = new List<LabelModel>();
 
             string query = @"
-                SELECT DISTINCT L.Id, L.Name
+                SELECT L.Id, L.Name
                 FROM Labels L
-                INNER JOIN NoteLabels NL ON L.Id = NL.LabelId
+                INNER JOIN NoteLabels NL
+                    ON L.Id = NL.LabelId
                 WHERE NL.NoteId = @NoteId
                 ORDER BY L.Name";
 
@@ -272,9 +215,7 @@ namespace Notes.DataAccess
             return labels;
         }
 
-        // =========================
         // GET NOTE IDS WITH ALL SELECTED LABELS
-        // =========================
         public HashSet<Guid> GetNoteIdsForUserWithAllLabels(
             Guid userId,
             IEnumerable<Guid> labelIds)
@@ -300,11 +241,16 @@ namespace Notes.DataAccess
             string query = $@"
                 SELECT N.Id
                 FROM Notes N
-                INNER JOIN NoteLabels NL ON N.Id = NL.NoteId
+                INNER JOIN NoteLabels NL
+                    ON N.Id = NL.NoteId
+                INNER JOIN Labels L
+                    ON L.Id = NL.LabelId
                 WHERE N.UserId = @UserId
+                AND L.UserId = @UserId
                 AND NL.LabelId IN ({string.Join(", ", parameterNames)})
                 GROUP BY N.Id
-                HAVING COUNT(DISTINCT NL.LabelId) = @SelectedLabelCount";
+                HAVING COUNT(DISTINCT NL.LabelId) =
+                    @SelectedLabelCount";
 
             using (SqlConnection conn = DatabaseManager.GetConnection())
             using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -336,9 +282,7 @@ namespace Notes.DataAccess
             return noteIds;
         }
 
-        // =========================
         // REMOVE LABEL FROM ONE NOTE
-        // =========================
         public void RemoveLabelFromNote(
             Guid noteId,
             Guid labelId)
@@ -360,99 +304,73 @@ namespace Notes.DataAccess
             }
         }
 
-        // =========================
         // DELETE LABEL FOR ONE USER
-        // =========================
         public bool DeleteLabelForUser(
             Guid labelId,
             Guid userId)
         {
-            string deleteNoteLabelLinksQuery = @"
+            string deleteNoteLabelsQuery = @"
                 DELETE NL
                 FROM NoteLabels NL
-                INNER JOIN Notes N ON N.Id = NL.NoteId
-                WHERE N.UserId = @UserId
-                AND NL.LabelId = @LabelId";
+                INNER JOIN Labels L
+                    ON NL.LabelId = L.Id
+                WHERE NL.LabelId = @LabelId
+                AND L.UserId = @UserId";
 
-            string deleteUserLabelQuery = @"
-                DELETE FROM UserLabels
-                WHERE UserId = @UserId
-                AND LabelId = @LabelId";
-
-            string deleteUnusedGlobalLabelQuery = @"
+            string deleteLabelQuery = @"
                 DELETE FROM Labels
                 WHERE Id = @LabelId
-                AND NOT EXISTS
-                (
-                    SELECT 1
-                    FROM UserLabels
-                    WHERE LabelId = @LabelId
-                )
-                AND NOT EXISTS
-                (
-                    SELECT 1
-                    FROM NoteLabels
-                    WHERE LabelId = @LabelId
-                )";
+                AND UserId = @UserId";
 
             using (SqlConnection conn = DatabaseManager.GetConnection())
             {
                 conn.Open();
 
-                using (SqlTransaction transaction = conn.BeginTransaction())
+                using (SqlTransaction transaction =
+                    conn.BeginTransaction())
                 {
                     try
                     {
-                        using (SqlCommand deleteLinksCmd = new SqlCommand(
-                            deleteNoteLabelLinksQuery,
-                            conn,
-                            transaction))
+                        using (SqlCommand deleteLinksCmd =
+                            new SqlCommand(
+                                deleteNoteLabelsQuery,
+                                conn,
+                                transaction))
                         {
-                            deleteLinksCmd.Parameters.AddWithValue(
-                                "@UserId",
-                                userId);
-
                             deleteLinksCmd.Parameters.AddWithValue(
                                 "@LabelId",
                                 labelId);
+
+                            deleteLinksCmd.Parameters.AddWithValue(
+                                "@UserId",
+                                userId);
 
                             deleteLinksCmd.ExecuteNonQuery();
                         }
 
-                        int deletedUserLabelRows;
+                        int deletedRows;
 
-                        using (SqlCommand deleteUserLabelCmd = new SqlCommand(
-                            deleteUserLabelQuery,
-                            conn,
-                            transaction))
+                        using (SqlCommand deleteLabelCmd =
+                            new SqlCommand(
+                                deleteLabelQuery,
+                                conn,
+                                transaction))
                         {
-                            deleteUserLabelCmd.Parameters.AddWithValue(
+                            deleteLabelCmd.Parameters.AddWithValue(
+                                "@LabelId",
+                                labelId);
+
+                            deleteLabelCmd.Parameters.AddWithValue(
                                 "@UserId",
                                 userId);
 
-                            deleteUserLabelCmd.Parameters.AddWithValue(
-                                "@LabelId",
-                                labelId);
-
-                            deletedUserLabelRows =
-                                deleteUserLabelCmd.ExecuteNonQuery();
-                        }
-
-                        using (SqlCommand deleteGlobalLabelCmd = new SqlCommand(
-                            deleteUnusedGlobalLabelQuery,
-                            conn,
-                            transaction))
-                        {
-                            deleteGlobalLabelCmd.Parameters.AddWithValue(
-                                "@LabelId",
-                                labelId);
-
-                            deleteGlobalLabelCmd.ExecuteNonQuery();
+                            deletedRows =
+                                deleteLabelCmd.ExecuteNonQuery();
                         }
 
                         transaction.Commit();
 
-                        return deletedUserLabelRows > 0;
+                        return deletedRows > 0;
                     }
                     catch
                     {

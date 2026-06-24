@@ -112,7 +112,6 @@
             flpSidebarLabels.Size = new Size(240, 277);
             flpSidebarLabels.TabIndex = 2;
             flpSidebarLabels.WrapContents = false;
-            flpSidebarLabels.Paint += flpSidebarLabels_Paint;
             // 
             // btnAddLabel
             // 
