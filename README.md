@@ -167,12 +167,6 @@ NoteImages
 - SQL Server
 - `Microsoft.Data.SqlClient` NuGet package
 
-Install the SQL Server client package if needed:
-
-```bash
-dotnet add package Microsoft.Data.SqlClient
-```
-
 ## Configuration
 
 Configure the SQL Server connection string in `DatabaseManager.cs`.
